@@ -19,7 +19,12 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import * as Font from "expo-font";
 import { connect } from "react-redux";
-import { setRestaurantDetails } from "../reducers/Action";
+import { setRestaurantDetails, setUserLocation } from "../reducers/Action";
+import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+import axios from 'axios';
+import { SERVER_URL } from "./Constant";
+import { camalize } from "./Methods"
 
 const dataX = [
   {
@@ -60,11 +65,78 @@ const dataX = [
 const Home = props => {
   const { navigation } = props;
   const [search, setSearch] = useState("");
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [nearByRestaurantList, setNearByRestaurantList] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'android' && !Constants.isDevice) {
+        setErrorMsg(
+          'Oops, this will not work on Snack in an Android emulator. Try it on your device!'
+        );
+        return;
+      }
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      // console.log(JSON.stringify(location))
+
+      setLocation(location);
+
+      // console.log("location: ", JSON.stringify(location))
+    })();
+  }, []);
+
+  useEffect(() => {
+    console.log("1")
+    if (location) {
+      console.log("2")
+      const locationObj = {
+        type: "Point",
+        coordinates: [Number(location.coords.latitude), Number(location.coords.longitude)]
+
+      }
+      props.setUserLocation(locationObj);
+
+      getNearByRestaurant(locationObj);
+    }
+
+  }, [location])
+
+  const getNearByRestaurant = (locationObj) => {
+    const obj = {
+      user_location: locationObj
+    };
+    axios(SERVER_URL + '/getNearByRestaurant', {
+      method: 'post',
+      headers: {
+        'Content-type': 'Application/json',
+        Accept: 'Application/json'
+      },
+      data: obj
+    }).then(
+      (response) => {
+        // console.log(response.data);
+        if (response.data) {
+          // console.log(response.data);
+          setNearByRestaurantList(response.data)
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 
   const goToMenu = item => {
-    console.log("item: ", item);
+    // console.log("item: ", item);
     props.setRestaurantDetails(item);
-    navigation.navigate("Menu", item);
+    navigation.navigate("Menu", { item });
   };
 
   const ItemView = ({ item }) => {
@@ -114,7 +186,7 @@ const Home = props => {
                   color: "#424242"
                 }}
               >
-                {item.name}
+                {camalize(item.name)}
               </Text>
               <Text
                 style={{
@@ -125,7 +197,7 @@ const Home = props => {
                   paddingLeft: 0
                 }}
               >
-                {item.menu_types.join(", ")}
+                {camalize(item.speciality)}
               </Text>
             </View>
             <View style={{}}>
@@ -178,7 +250,7 @@ const Home = props => {
       </View>
 
       <FlatList
-        data={dataX}
+        data={nearByRestaurantList}
         //data defined in constructor
         // ItemSeparatorComponent={ItemSeparatorView}
         //Item Separator View
@@ -190,10 +262,12 @@ const Home = props => {
 };
 
 const mapStateToProps = state => ({
-  userDetails: state.AppReducer.userDetails
+  userDetails: state.AppReducer.userDetails,
+  userLocation: state.AppReducer.userLocation
 });
 const mapDispatchToProps = {
-  setRestaurantDetails
+  setRestaurantDetails,
+  setUserLocation,
 };
 export default connect(
   null,

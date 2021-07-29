@@ -23,9 +23,13 @@ import InputSpinner from "./AddButton/AddButton";
 import Styles from "../../Styles";
 import { connect } from "react-redux";
 import { setRestaurantDetails } from "../reducers/Action";
+import axios from 'axios';
+import { SERVER_URL } from "./Constant";
+import { camalize } from "./Methods"
 
 const Menu = props => {
   const { navigation } = props;
+  const { item } = props.route.params;
   const [search, setSearch] = useState("");
   const [headerTitle, setHeaderTitle] = useState("Default Title");
   const [value, setValue] = useState(0);
@@ -33,13 +37,41 @@ const Menu = props => {
   const [totalCost, setTotalCost] = useState(0);
 
   useEffect(() => {
-    console.log("props.restaurantDetails: ", props.restaurantDetails);
+    // console.log("props.restaurantDetails: ", item);
     if (props.restaurantDetails) {
       props.navigation.setOptions({
         title: props.restaurantDetails.name
       });
     }
   }, [props.restaurantDetails]);
+
+  useEffect(() => {
+    getMenuByRestaurantId(item.id)
+  }, [item]);
+
+  const getMenuByRestaurantId = (restaurantId) => {
+    const obj = {
+      restaurant_id: restaurantId
+    };
+    axios(SERVER_URL + '/getMenuByRestaurantId', {
+      method: 'post',
+      headers: {
+        'Content-type': 'Application/json',
+        Accept: 'Application/json'
+      },
+      data: obj
+    }).then(
+      (response) => {
+        // console.log(response.data);
+        if (response.data) {
+          console.log(response.data);
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
 
   const itemAdded = item => {
     setTotalCost(20);
@@ -146,7 +178,7 @@ const Menu = props => {
                 editable={false}
                 onDecrease={() => itemRemoved(item)}
                 onIncrease={() => itemAdded(item)}
-                // buttonTextColor={"#ffffff"}
+              // buttonTextColor={"#ffffff"}
               />
             </View>
           </View>

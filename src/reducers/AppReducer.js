@@ -2,7 +2,8 @@ import { ACTION_TYPES } from "./ActionType";
 
 const initialState = {
   restaurantDetails: null,
-  userDetails: {}
+  userDetails: {},
+  userLocation: null
 };
 const AppReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -13,6 +14,12 @@ const AppReducer = (state = initialState, action) => {
         restaurantDetails: action.payload
       };
 
+    case ACTION_TYPES.SET_USER_LOCATION:
+      // // console.log("SET_USER_LOCATION");
+      return {
+        ...state,
+        userLocation: action.payload
+      };
     default:
       // console.log("Default");
       return state;
