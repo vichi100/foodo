@@ -22,7 +22,7 @@ import * as Font from "expo-font";
 import InputSpinner from "./AddButton/AddButton";
 import Styles from "../../Styles";
 import { connect } from "react-redux";
-import { setRestaurantDetails, setCartItems } from "../reducers/Action";
+import { setRestaurantDetails } from "../reducers/Action";
 import axios from 'axios';
 import { SERVER_URL } from "./Constant";
 import { camalize } from "./Methods";
@@ -34,7 +34,7 @@ const Menu = props => {
   const { item } = props.route.params;
   const [search, setSearch] = useState("");
   const [headerTitle, setHeaderTitle] = useState("Default Title");
-  const [itemCount, setItemCount] = useState({});
+  const [value, setValue] = useState(0);
   const [orderCart, setOrderCart] = useState(null);
   const [totalCost, setTotalCost] = useState(0);
   const [dishList, setDishList] = useState([]);
@@ -98,37 +98,10 @@ const Menu = props => {
   }
 
   const itemAdded = item => {
-    // console.log("item: ", JSON.stringify(item));
-    let cart = {};
-    // const itemCount = {}
-    if (item.price_details.length === 1) {
-      cart = {
-        id: item.id,
-        name: item.dish_name,
-        veg: item.is_veg,
-        cost: item.price_details[0].price,
-        quantity: item.price_details[0].quantity,
-        count: itemCount[itemCount[item.id]] + 1 || 1
-      }
-
-      const cost = item.price_details[0].price;
-      setTotalCost(Number(cost) + Number(totalCost));
-    }
-
-    if (itemCount[item.id]) {
-      itemCount[item.id] = itemCount[item.id] + 1
-    } else {
-      itemCount[item.id] = 1
-
-    }
-
-    // itemCount[item.id] = itemCount[itemCount[item.id]] + 1 || 1
-    console.log("itemCount: " + JSON.stringify(itemCount))
-    setItemCount({ ...itemCount })
+    setTotalCost(20);
   };
 
   const itemRemoved = item => {
-    console.log("item: ", JSON.stringify(item));
     setTotalCost(20);
   };
 
@@ -145,7 +118,7 @@ const Menu = props => {
     return (
       <View
         style={{
-          // flexDirection: "row",
+          flexDirection: "row",
           justifyContent: "space-between",
           margin: 5,
           //   paddingBottom: 20,
@@ -160,111 +133,42 @@ const Menu = props => {
           borderColor: "#eeeeee"
         }}
       >
-
-        <View style={{ margin: 10 }}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 16 }}>{camalize(item.dish_name)}</Text>
-            {item.is_veg === 'yes' ? <Image
-              style={{ width: 12, height: 12, marginTop: 3, marginLeft: 10 }}
-              source={require("../../assets/images/veg.png")}
-            /> : <Image
-              style={{ width: 12, height: 12, marginTop: 3, marginLeft: 10 }}
-              source={require("../../assets/images/nonveg.png")}
-            />}
-
-          </View>
-          <Text style={{ paddingTop: 5, color: "#616161" }}>{item.details}</Text>
-
-        </View>
-
-        <View style={{ flexDirection: "row" }}>
-
-          <View
-            style={{ marginLeft: 10, marginTop: 15, minHeight: 70, }}
-          >
-            <Text style={{ paddingTop: 5, color: "#696969" }}>{"\u20B9"}{priceArray.sort()[0]}</Text>
-
-          </View>
-          {item.image ? (
-            <View style={{ marginBottom: 20 }}>
-              <Image
-                source={{
-                  uri: item.image
-                }}
-                style={{
-                  height: 100,
-                  width: 120,
-                  resizeMode: "cover",
-                  margin: 5,
-                  borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
-                  borderTopRightRadius: 10,
-                  borderTopLeftRadius: 10,
-                  overflow: "hidden"
-                }}
-              />
-              <View style={{ position: "absolute", bottom: -10, left: 15 }}>
-                <InputSpinner
-                  value={itemCount[itemCount.id] || null}
-                  style={Styles.spinner}
-                  skin="clean"
-                  max={10}
-                  colorMax={"#f04048"}
-                  colorMin={"#c8e6c9"}
-                  width={100}
-                  height={30}
-                  editable={false}
-                  onDecrease={() => itemRemoved(item)}
-                  onIncrease={() => itemAdded(item)}
-                // buttonTextColor={"#ffffff"}
-                />
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                position: "absolute",
-                justifyContent: "center",
-                alignItems: "center",
-                alignContent: "center",
-                marginTop: 15,
-                right: 8
-              }}
-            >
-              <InputSpinner
-                value={itemCount[itemCount.id] || null}
-                style={Styles.spinner}
-                skin="clean"
-                max={99}
-                colorMax={"#f04048"}
-                colorMin={"#c8e6c9"}
-                width={100}
-                height={30}
-                editable={false}
-                onDecrease={() => itemRemoved(item)}
-                onIncrease={() => itemAdded(item)}
-              />
-            </View>
-          )}
-
-        </View>
-
         <View
-          style={{
-            marginTop: 0,
-            marginLeft: 10,
-            flexDirection: "row",
-            bottom: 5,
-            position: "absolute"
-          }}
+          style={{ marginLeft: 20, marginTop: 15, minHeight: 90, width: "50%" }}
         >
-          <MaterialIcons name="star" color={"#ff9100"} size={15} />
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 13 }}>4.3</Text>
-            <Text style={{ color: "#0277bd", fontSize: 13 }}>
-              {" "}
-              | 4.1 rating by your friends
-            </Text>
+          <View >
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 16 }}>{camalize(item.dish_name)}</Text>
+              {item.is_veg === 'yes' ? <Image
+                style={{ width: 12, height: 12, marginTop: 3, marginLeft: 10 }}
+                source={require("../../assets/images/veg.png")}
+              /> : <Image
+                style={{ width: 12, height: 12, marginTop: 3, marginLeft: 10 }}
+                source={require("../../assets/images/nonveg.png")}
+              />}
+
+            </View>
+            <Text style={{ paddingTop: 5, color: "#616161" }}>{"\u20B9"}{item.details}</Text>
+
+          </View>
+
+          <Text style={{ paddingTop: 5, color: "#616161" }}>{"\u20B9"}{priceArray.sort()[0]}</Text>
+          <View
+            style={{
+              marginTop: 15,
+              flexDirection: "row",
+              bottom: 5,
+              position: "absolute"
+            }}
+          >
+            <MaterialIcons name="star" color={"#ff9100"} size={15} />
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 13 }}>4.3</Text>
+              <Text style={{ color: "#0277bd", fontSize: 13 }}>
+                {" "}
+                | 4.1 rating by ur frnds
+              </Text>
+            </View>
           </View>
         </View>
         {/* <View
@@ -280,7 +184,67 @@ const Menu = props => {
             source={require("../../assets/images/bestseller.png")}
           />
         </View> */}
-
+        {item.image ? (
+          <View style={{ marginBottom: 20 }}>
+            <Image
+              source={{
+                uri: item.image
+              }}
+              style={{
+                height: 100,
+                width: 120,
+                resizeMode: "cover",
+                margin: 5,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
+                borderTopRightRadius: 10,
+                borderTopLeftRadius: 10,
+                overflow: "hidden"
+              }}
+            />
+            <View style={{ position: "absolute", bottom: -10, left: 15 }}>
+              <InputSpinner
+                value={value}
+                style={Styles.spinner}
+                skin="clean"
+                max={10}
+                colorMax={"#f04048"}
+                colorMin={"#c8e6c9"}
+                width={100}
+                height={30}
+                editable={false}
+                onDecrease={() => itemRemoved(item)}
+                onIncrease={() => itemAdded(item)}
+              // buttonTextColor={"#ffffff"}
+              />
+            </View>
+          </View>
+        ) : (
+          <View
+            style={{
+              position: "absolute",
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
+              marginTop: 15,
+              right: 8
+            }}
+          >
+            <InputSpinner
+              value={value}
+              style={Styles.spinner}
+              skin="clean"
+              max={99}
+              colorMax={"#f04048"}
+              colorMin={"#c8e6c9"}
+              width={100}
+              height={30}
+              editable={false}
+              onDecrease={() => itemRemoved(item)}
+              onIncrease={() => itemAdded(item)}
+            />
+          </View>
+        )}
       </View>
     );
   };
@@ -316,6 +280,14 @@ const Menu = props => {
             <EvilIcons name="search" color={"#ef6c00"} size={24} />
           </View>
         </View>
+        {/* <FlatList
+          data={dishList}
+          //data defined in constructor
+          // ItemSeparatorComponent={ItemSeparatorView}
+          //Item Separator View
+          renderItem={ItemView}
+          keyExtractor={(item, index) => index.toString()}
+        /> */}
 
         <StickyHeaderFlatlist
           keyExtractor={(_, i) => i + ""}
@@ -350,11 +322,10 @@ const Menu = props => {
           }}
         >
           <View style={{ flexDirection: "row" }}>
-
-            <Text style={{ paddingTop: 15, color: "#424242" }}>{(Object.values(itemCount)).reduce(function (acc, val) { return acc + val; }, 0)}</Text>
+            <Text style={{ paddingTop: 15, color: "#424242" }}>3 Items</Text>
             <Text style={{ paddingTop: 15, color: "#424242" }}>
               {" "}
-              | {"\u20B9"}{totalCost}
+              | {"\u20B9"}239
             </Text>
           </View>
           <TouchableOpacity onPress={() => goToCart()}>
@@ -381,12 +352,10 @@ const Menu = props => {
 };
 
 const mapStateToProps = state => ({
-  restaurantDetails: state.AppReducer.restaurantDetails,
-  cartItems: state.AppReducer.cartItems
+  restaurantDetails: state.AppReducer.restaurantDetails
 });
 const mapDispatchToProps = {
-  setRestaurantDetails,
-  setCartItems
+  setRestaurantDetails
 };
 export default connect(
   mapStateToProps,

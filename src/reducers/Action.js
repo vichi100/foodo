@@ -16,3 +16,13 @@ export const setUserLocation = payload => {
   };
 };
 
+export const setCartItems = payload => {
+  // console.log("payload", payload);
+  return {
+    type: ACTION_TYPES.SET_CART_ITEMS,
+    payload
+  };
+};
+
+
+

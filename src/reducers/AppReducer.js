@@ -3,7 +3,8 @@ import { ACTION_TYPES } from "./ActionType";
 const initialState = {
   restaurantDetails: null,
   userDetails: {},
-  userLocation: null
+  userLocation: null,
+  cartItems: null
 };
 const AppReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -20,6 +21,15 @@ const AppReducer = (state = initialState, action) => {
         ...state,
         userLocation: action.payload
       };
+
+    case ACTION_TYPES.SET_CART_ITEMS:
+      // // console.log("SET_USER_LOCATION");
+      return {
+        ...state,
+        cartItems: action.payload
+      };
+
+
     default:
       // console.log("Default");
       return state;
