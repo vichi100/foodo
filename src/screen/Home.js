@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Entypo from "react-native-vector-icons/Entypo";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import * as Font from "expo-font";
 import { connect } from "react-redux";
@@ -26,41 +27,7 @@ import axios from 'axios';
 import { SERVER_URL } from "./Constant";
 import { camalize } from "./Methods"
 
-const dataX = [
-  {
-    name: "China Town",
-    menu_types: ["Chinese", "Asian", "Thai"],
-    location: "Versova",
-    mobile: ["9833097595"],
-    other_contact: ["9867614466"],
-    address: "35/4 Daily market",
-    latnlong: "",
-    type_of: ["dine in", "take away"],
-    rating: "3.8"
-  },
-  {
-    name: "Fab To Fit",
-    menu_types: ["Chinese", "Asian", "Thai"],
-    location: "Versova",
-    mobile: ["9833097595"],
-    other_contact: ["9867614466"],
-    address: "35/4 Daily market",
-    latnlong: "",
-    type_of: ["dine in", "take away"],
-    rating: "3.8"
-  },
-  {
-    name: "China Town",
-    menu_types: ["Chinese", "Asian", "Thai"],
-    location: "Versova",
-    mobile: ["9833097595"],
-    other_contact: ["9867614466"],
-    address: "35/4 Daily market",
-    latnlong: "",
-    type_of: ["dine in", "take away"],
-    rating: "3.8"
-  }
-];
+
 
 const Home = props => {
   const { navigation } = props;
@@ -219,6 +186,13 @@ const Home = props => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#ffffff" }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Entypo name="location-pin" color={"#ef6c00"} size={24} />
+        <Text style={{ color: "#696969", fontWeight: "600", fontSize: 16 }}>Home</Text>
+        <Text numberOfLines={1}
+          ellipsizeMode='tail'
+          style={{ color: "#696969", fontWeight: "400", fontSize: 12, marginLeft: 10, width: 100 }}>301 ZA tower How can I do that in React Native Text element</Text>
+      </View>
       <View style={{ marginTop: 5, borderColor: "#eeeeee" }}>
         <TextInput
           style={{
@@ -273,3 +247,40 @@ export default connect(
   null,
   mapDispatchToProps
 )(Home);
+
+
+const dataX = [
+  {
+    name: "China Town",
+    menu_types: ["Chinese", "Asian", "Thai"],
+    location: "Versova",
+    mobile: ["9833097595"],
+    other_contact: ["9867614466"],
+    address: "35/4 Daily market",
+    latnlong: "",
+    type_of: ["dine in", "take away"],
+    rating: "3.8"
+  },
+  {
+    name: "Fab To Fit",
+    menu_types: ["Chinese", "Asian", "Thai"],
+    location: "Versova",
+    mobile: ["9833097595"],
+    other_contact: ["9867614466"],
+    address: "35/4 Daily market",
+    latnlong: "",
+    type_of: ["dine in", "take away"],
+    rating: "3.8"
+  },
+  {
+    name: "China Town",
+    menu_types: ["Chinese", "Asian", "Thai"],
+    location: "Versova",
+    mobile: ["9833097595"],
+    other_contact: ["9867614466"],
+    address: "35/4 Daily market",
+    latnlong: "",
+    type_of: ["dine in", "take away"],
+    rating: "3.8"
+  }
+];
